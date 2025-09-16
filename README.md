@@ -8,8 +8,6 @@ We introduce CPlink, an interpretable, unified, and flexible computational frame
 <img  src="vignettes/Figure%201.jpg" width="700" height=auto > 
 </p>
 
-https://github.com/jiaojhua/CPlink/blob/main/vignettes/Figure%201.jpg
-
 # Installation
 To run ``CPlink`` R package, install from GitHub through ``devtools`` directly:
 ```R
@@ -27,19 +25,19 @@ devtools::install_github("jiaojhua/CPlink")
 * For scATAC-seq datasets, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb), datasets are available at this [link].
 
 # Dependencies
-- Seurat
-- Signac
-- CelliD
-- DESeq2
-- edgeR
-- limma
-- methods
-- proxyC
-- Matrix
-- parallel
-- doParallel
-- survival
-- foreach
+- Seurat v4.4.0
+- Signac v1.13.0
+- CelliD v1.10.1
+- DESeq2 v1.42.1
+- survival v3.7.0
+- proxyC v0.4.1
+- Matrix v1.6.5
+- parallel v4.3.3
+- doParallel v1.0.17
+- methods v4.2.0
+- foreach v1.5.2
+- edgeR v4.0.16
+- limma 3.58.1
 
 # Contact
 If you have any questions, please feel free to contact Jiao Hua (jhua@stu.hit.edu.cn).
