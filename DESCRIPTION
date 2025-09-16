@@ -1,0 +1,14 @@
+Package: CPlink
+Type: Package
+Title: Mapping clinical phenotype to single-cell and spatial omics profiles
+Version: 0.1.0
+Author: Jiao Hua
+Maintainer: Jiao Hua <jhua@stu.hit.edu.cn>
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL-2
+Encoding: UTF-8
+Depends: R (>= 3.6.1)
+LazyData: true
+Imports: CelliD, Signac, Seurat, DESeq2, edgeR, limma, methods, proxyC, Matrix, parallel, doParallel, survival, foreach
+RoxygenNote: 7.3.1
