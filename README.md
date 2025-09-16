@@ -18,7 +18,19 @@ devtools::install_github("jiaojhua/CPlink")
 * For scATAC-seq datasets, please see [here](https://github.com/jiaojhua/CPlink/blob/main/Tutorial/Tutorial-scATAC-seq.ipynb), datasets are available at this [link].
 
 # Dependencies
-To run CPlink, it needs to install a list of R packages, including: Seurat, Signac, CelliD, DESeq2, edgeR, limma, methods, proxyC, Matrix, parallel, doParallel, survival, and foreach.
+- Seurat
+- Signac
+- CelliD
+- DESeq2
+- edgeR
+- limma
+- methods
+- proxyC
+- Matrix
+- parallel
+- doParallel
+- survival
+- foreach
 
 # Contact
-If you have any suggestions or problems, please contact Jiao Hua (jhua@stu.hit.edu.cn).
+If you have any questions, please feel free to contact Jiao Hua (jhua@stu.hit.edu.cn).
