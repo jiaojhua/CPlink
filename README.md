@@ -18,7 +18,7 @@ devtools::install_github("jiaojhua/CPlink")
 
 # Tutorials
 
-* For ST, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb), datasets are available at this [link](10.6084/m9.figshare.30120487).
+* For ST, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb), datasets are available at this [link](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST).
 
 * For scRNA-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/1vEdG0MOwRcHhB02CYn9s1REBzFt4-kh7?usp=drive_link).
 
