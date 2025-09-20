@@ -18,11 +18,11 @@ devtools::install_github("jiaojhua/CPlink")
 
 # Tutorials
 
-* For ST datasets, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb), datasets are available at this [link].
+* For ST, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb), datasets are available at this [link](10.6084/m9.figshare.30120487).
 
-* For scRNA-seq datasets, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb), datasets are available at this [link].
+* For scRNA-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb), datasets are available at this [link](10.6084/m9.figshare.30120487).
 
-* For scATAC-seq datasets, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb), datasets are available at this [link].
+* For scATAC-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb), datasets are available at this [link](10.6084/m9.figshare.30120487).
 
 # Dependencies
 - Seurat v4.4.0
