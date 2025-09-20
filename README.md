@@ -1,4 +1,4 @@
-# CPlink
+# CPlink: Linking cells or spots to clinical phenotypes.
 Mapping clinical phenotype to single-cell and spatial omics profiles 
 
 ## Overview
