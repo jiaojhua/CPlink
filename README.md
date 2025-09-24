@@ -17,12 +17,15 @@ devtools::install_github("jiaojhua/CPlink")
 ```
 
 # Tutorials
+CPlink is designed to identify cells or spots associated with phenotypes by transferring prior phenotype knowledge from bulk or predefined signature data to single-cell or spatial omics data. Here, we provide example workflows on multiple data modalities.
 
 * For ST, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb), datasets are available at this [link](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST).
 
 * For scRNA-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/1cp5thfClw262LneR3bm9jnf8jqIWN-yH?usp=drive_link).
 
-* For scATAC-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link).
+* Single-cell ATAC-seq data
+By default, CPlink requires the scATAC-seq count matrix, metadata, and fragment files, and bulk ATAC-seq count matrix and phenotype metadata as input.
+Examples of CPlink on scATAC-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb) [Data](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link).
 
 * For CPlinkPrior, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CPlinkPrior.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/117W5neDCXxcnlfKPLeqM8LEWgcdvmVwy?usp=drive_link).
 
