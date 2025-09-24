@@ -17,7 +17,7 @@ devtools::install_github("jiaojhua/CPlink")
 ```
 
 # Tutorials
-CPlink is designed to identify cells or spots associated with phenotypes by transferring prior phenotype knowledge from bulk or predefined signature data to single-cell or spatial omics data. Here, we provide example workflows on multiple data modalities.
+CPlink is designed to identify cells or spots associated with phenotypes by transferring prior phenotype knowledge from bulk or predefined signature data to single-cell or spatial omics data. Here, we provide example workflows for multiple modality data.
 
 * **Spatial transcriptomics (ST) data**  
   CPlink requires as input the ST count matrix, spot metadata, spatial coordinates, and the bulk RNA-seq count matrix with corresponding phenotype metadata.  
