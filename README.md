@@ -23,9 +23,10 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
 
 * For scRNA-seq, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/1cp5thfClw262LneR3bm9jnf8jqIWN-yH?usp=drive_link).
 
-* Single-cell ATAC-seq data
+* **Single-cell ATAC-seq data**
 CPlink requires as input the scATAC-seq count matrix, associated cell metadata, fragment files, as well as the bulk ATAC-seq count matrix and corresponding phenotype metadata.
-Examples of CPlink on scATAC-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb), [Data](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link).
+
+Examples of CPlink applied to scATAC-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link).
 
 * For CPlinkPrior, please see [here](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CPlinkPrior.ipynb), datasets are available at this [link](https://drive.google.com/drive/folders/117W5neDCXxcnlfKPLeqM8LEWgcdvmVwy?usp=drive_link).
 
