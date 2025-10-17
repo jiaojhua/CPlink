@@ -24,12 +24,12 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
 
   Examples of CPlink applied to ST data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb) | [Data](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST)
 
-* **Single-cell RNA-seq data**  
+* **Single-cell RNA-seq (scRNA-seq) data**  
   CPlink requires as input the scRNA-seq count matrix, cell metadata, as well as the bulk RNA-seq count matrix and corresponding phenotype metadata.  
 
   Examples of CPlink applied to scRNA-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1cp5thfClw262LneR3bm9jnf8jqIWN-yH?usp=drive_link)
 
-* **Single-cell ATAC-seq data**
+* **Single-cell ATAC-seq (scATAC-seq) data**
   
   CPlink requires as input the scATAC-seq count matrix, cell metadata, fragment files, as well as the bulk ATAC-seq count matrix and corresponding phenotype metadata.
 
