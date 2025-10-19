@@ -22,23 +22,23 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
 * **Spatial transcriptomics (ST) data**  
   CPlink requires as input the ST count matrix, spot metadata, spatial coordinates, and the bulk RNA-seq count matrix with corresponding phenotype metadata.  
 
-  Examples of CPlink applied to ST data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb) | [Data](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST)
+  Example of CPlink applied to ST data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb) | [Data](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST)
 
 * **Single-cell RNA-seq (scRNA-seq) data**  
   CPlink requires as input the scRNA-seq count matrix, cell metadata, as well as the bulk RNA-seq count matrix and corresponding phenotype metadata.  
 
-  Examples of CPlink applied to scRNA-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1cp5thfClw262LneR3bm9jnf8jqIWN-yH?usp=drive_link)
+  Example of CPlink applied to scRNA-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scRNA-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1cp5thfClw262LneR3bm9jnf8jqIWN-yH?usp=drive_link)
 
 * **Single-cell ATAC-seq (scATAC-seq) data**
   
   CPlink requires as input the scATAC-seq count matrix, cell metadata, fragment files, as well as the bulk ATAC-seq count matrix and corresponding phenotype metadata.
 
-  Examples of CPlink applied to scATAC-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link).
+  Example of CPlink applied to scATAC-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-scATAC-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1vM-qbFdxVd2UnX-vnTQwCXOtm6Pz7Z7f?usp=drive_link)
 
-* **CPlinkPrior (predefined feature signatures)**  
+* **CPlinkPrior (predefined feature signatures associated with specific phenotypes or biological functions)**  
   CPlinkPrior uses a user-defined set of phenotype-associated features or genomic regions collected from public databases or literature as prior biological knowledge. In this case, CPlinkPrior requires as input a count matrix from the target single-cell or spatial data, associated cell/spot metadata, spatial coordinates (for ST), and a user-defined set of phenotype-relevant signatures.
 
-  Examples of CPlinkPrior: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CPlinkPrior.ipynb) | [Data](https://drive.google.com/drive/folders/117W5neDCXxcnlfKPLeqM8LEWgcdvmVwy?usp=drive_link)
+  Example of CPlinkPrior: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CPlinkPrior.ipynb) | [Data](https://drive.google.com/drive/folders/117W5neDCXxcnlfKPLeqM8LEWgcdvmVwy?usp=drive_link)
 
 # Dependencies
 - Seurat v4.4.0
