@@ -10,5 +10,5 @@ License: GPL-2
 Encoding: UTF-8
 Depends: R (>= 3.6.1)
 LazyData: true
-Imports: CelliD, Signac, Seurat, DESeq2, edgeR, limma, methods, proxyC, Matrix, parallel, doParallel, survival, foreach
+Imports: Signac, Seurat, DESeq2, methods, proxyC, Matrix, parallel, doParallel, survival, foreach
 RoxygenNote: 7.3.1
