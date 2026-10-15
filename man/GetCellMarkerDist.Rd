@@ -8,7 +8,7 @@ GetCellMarkerDist(
   MCA_obj = MCA_obj,
   markers = markers,
   ues_dim = 50,
-  method = c("cosine", "pearcon", "spearman", "euclidean")[1]
+  method = c("cosine", "pearson", "spearman", "euclidean")[1]
 )
 }
 \arguments{

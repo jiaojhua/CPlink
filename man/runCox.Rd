@@ -7,10 +7,12 @@
 runCox(
   bulk_count,
   bulk_meta,
-  design_formula = "Surv(time, status) ~",
+  design_formula = "1",
   time_event_name = c("time", "status"),
-  cv_quantile = 0.05,
+  norm = FALSE,
+  min_prop = 0.05,
   p.adj = 0.05,
+  p_cox = 0.05,
   n_cores = parallel::detectCores()
 )
 }
@@ -23,11 +25,17 @@ runCox(
 
 \item{time_event_name}{the column name for survival time and event status}
 
-\item{cv_quantile}{Filter out a certain proportion of low-variance features by using the coefficient of variation}
+\item{norm}{Logical. Whether to perform DESeq2 size-factor normalization on bulk count data (default: FALSE).}
+
+\item{min_prop}{Numeric scalar in [0,1]. Minimum proportion of samples with feature expression greater than 1 required for retaining a feature (default: 0.05).}
 
 \item{p.adj}{Adjusted p-value cutoff for significance (default: 0.05)}
 
+\item{p_cox}{Numeric scalar. Nominal p-value threshold for Cox regression (default: 0.05). Currently not used in the function.}
+
 \item{n_cores}{Number of cores for parallel processing. default: parallel::detectCores() (all available cores)}
+
+\item{cv_quantile}{Filter out a certain proportion of low-variance features by using the coefficient of variation}
 }
 \value{
 A list containing:
