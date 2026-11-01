@@ -48,7 +48,7 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
  * **CITE-seq data (RNA and protein)**  
   CPlink requires as input the CITE-seq expression matrices (RNA and ADT), cell metadata, and the bulk RNA-seq count matrix with corresponding phenotype metadata.
 
-  Example of CPlink applied to CITE-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CITE-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1qhYt5v34xhBgMQ3uJnr8Us6k7WjrhaPP?usp=sharing)
+    Example of CPlink applied to CITE-seq data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-CITE-seq.ipynb) | [Data](https://drive.google.com/drive/folders/1qhYt5v34xhBgMQ3uJnr8Us6k7WjrhaPP?usp=sharing)
 
 * **CPlinkPrior (predefined feature signatures associated with specific phenotypes or biological functions)**  
   CPlinkPrior uses a user-defined set of phenotype-associated features or genomic regions collected from public databases or literature as prior biological knowledge. In this case, CPlinkPrior requires as input a count matrix from the target single-cell or spatial data, associated cell/spot metadata, spatial coordinates (for ST), and a user-defined set of phenotype-relevant signatures.
