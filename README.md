@@ -1,5 +1,5 @@
 # CPlink: LINKing Cells or spots to clinical Phenotypes
-Decoding cell states associated with clinical phenotypes in single-cell and spatial omics data  
+Decoding cell states and niches associated with clinical phenotypes in single-cell and spatial omics data  
 
 ## Overview
 We introduce CPlink, an interpretable, unified, and flexible computational framework that identifies clinical phenotype-associated cells or spots from single-cell or spatial omics data, leveraging reference bulk omics data for enhanced disease prediction and biological discovery.
@@ -43,7 +43,7 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
 # Dependencies
 - Seurat v4.4.0
 - Signac v1.13.0
-- CelliD v1.10.1
+- CellID v1.10.1
 - DESeq2 v1.42.1
 - survival v3.7.0
 - proxyC v0.4.1
