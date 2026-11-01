@@ -24,7 +24,7 @@ CPlink is designed to identify cells or spots associated with phenotypes by tran
 
   Example of CPlink applied to ST data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-ST.ipynb) | [Data](https://github.com/jiaojhua/CPlink_analysis/tree/main/Testdata/ST)
 
-  * **Spatial proteomics (SP) data**  
+* **Spatial proteomics (SP) data**  
   CPlink requires as input the CODEX protein expression matrix, cell metadata, and spatial coordinates, together with bulk RNA-seq data with corresponding phenotype metadata and Xenium data.
 
   Example of CPlink applied to SP data: [Tutorial](https://github.com/jiaojhua/CPlink/blob/main/vignettes/Tutorial-SP.ipynb) | [Data](https://drive.google.com/drive/folders/1BmtRkIVhDxlSkDKwQKWtVtS48Yo01eSc?usp=sharing)
