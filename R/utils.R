@@ -20,8 +20,8 @@ getCOSNN <- function(seurat_obj, alpha, position, snn = seurat_obj@graphs$SCT_sn
   sp_obj <- seurat_obj
   spatial_coords <- position[colnames(sp_obj), ]
 
-  coord_snn <- as.matrix(FindNeighbors(as.matrix(spatial_coords), compute.SNN = TRUE)$snn)
-  ge_snn <- as.matrix(snn)
+  coord_snn <- FindNeighbors(as.matrix(spatial_coords), compute.SNN = TRUE)$snn
+  ge_snn <- snn
 
 
   alpha <- alpha

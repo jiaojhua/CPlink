@@ -68,7 +68,7 @@ runMCA <- function(Mtx = Mtx,
 GetCellMarkerDist <- function(MCA_obj = MCA_obj,
                               markers = markers,
                               ues_dim = 50,
-                              method = c("cosine", "pearcon", "spearman", "euclidean")[1]){
+                              method = c("cosine", "pearson", "spearman", "euclidean")[1]){
 
   # Validate inputs (latent phenotype space must provide co-embedded coordinates)
   if (is.null(MCA_obj) || !is.list(MCA_obj)) {
@@ -201,3 +201,201 @@ runCellScores <- function(dist_mat,
 }
 
 
+#' Transfer Phenotype Association Scores from Spatial Transcriptomics to CODEX Cells
+#'
+#' This function computes initial phenotype association scores from spatial
+#' transcriptomics (ST) data and transfers these scores to spatially aligned
+#' CODEX cells. It extends the CPlink framework to spatial proteomics by
+#' leveraging phenotype-associated molecular features derived from reference
+#' bulk omics data and their spatial correspondence with CODEX cells.
+#'
+#' Specifically, the function first constructs a latent phenotype space using
+#' Multiple Correspondence Analysis (MCA) restricted to phenotype-associated
+#' features. It then quantifies feature-to-cell associations in this space
+#' and calculates weighted phenotype association scores for ST cells/spots.
+#' Finally, these scores are transferred to CODEX cells through spatial
+#' nearest-neighbor mapping with Gaussian kernel weighting.
+#'
+#' @param STMtx A numeric count matrix (features x cells/spots) from spatial
+#'   transcriptomics data. Rows represent genes and columns represent
+#'   cells/spots. Must contain row names and column names.
+#' @param DEGs_mtx A data.frame containing phenotype-associated molecular
+#'   features and their corresponding effect weights. Must contain:
+#'   \itemize{
+#'     \item markers: Character vector of phenotype-associated feature IDs.
+#'     \item logFC: Signed effect weights indicating the direction and
+#'       magnitude of phenotype associations.
+#'   }
+#'   Feature identifiers must also be provided as row names for compatibility
+#'   with the downstream scoring function.
+#' @param MCA_dim Integer scalar. Number of MCA dimensions retained for
+#'   calculating feature-to-cell associations (default: 50).
+#' @param sim_methods Character string specifying the similarity metric
+#'   used to quantify associations between molecular features and ST cells/spots.
+#'   Supported methods include "cosine", "pearson", "spearman", and
+#'   "euclidean" (default: "cosine").
+#' @param up_weight Numeric scalar specifying the contribution of positively
+#'   associated features to the initial phenotype score (default: 0.5).
+#' @param down_weight Numeric scalar specifying the contribution of negatively
+#'   associated features to the initial phenotype score (default: 0.5).
+#' @param k Integer scalar. Number of spatially nearest ST cells/spots used
+#'   to estimate the phenotype association score of each CODEX cell
+#'   (default: 20).
+#' @param ST_coords A matrix or data.frame containing spatial coordinates
+#'   of ST cells/spots. Must contain columns "x" and "y".
+#'   Row order must correspond to the ST cell/spot score vector.
+#' @param SP_coords A matrix or data.frame containing spatial coordinates
+#'   of CODEX cells. Must contain columns "x" and "y", with row names
+#'   representing CODEX cell identifiers.
+#'
+#' @return A named numeric vector containing the transferred initial
+#'   phenotype association score for each CODEX cell. Vector names
+#'   correspond to CODEX cell identifiers.
+#'
+#' @seealso runMCA, GetCellMarkerDist, runCellScores,
+#'   mapSPTScoreToCODEX, runCPlink_CODEX
+#'
+#' @export
+getCodexInitCellScore <- function(STMtx,
+                                  DEGs_mtx,
+                                  MCA_dim = 50,
+                                  sim_methods = c("cosine", "pearson", "spearman", "euclidean")[1],
+                                  up_weight = 0.5,
+                                  down_weight = 0.5,
+                                  k = 20,
+                                  ST_coords,
+                                  SP_coords
+
+
+){
+  if (is.null(DEGs_mtx$markers)) stop("`DEGs_mtx` must contain element `markers` (character vector of feature IDs).")
+  if (!sim_methods %in% c("cosine","pearson","spearman","euclidean")) stop("`sim_methods` must be one of 'cosine','pearson','spearman','euclidean'.")
+
+  message("Starting CPlink pipeline")
+
+  # ---- MCA embedding restricted to phenotype-specific features ----
+  message("Running MCA on phenotype-specific features")
+  MCA_obj <- runMCA(Mtx = STMtx, markers = DEGs_mtx$markers)
+
+  # ---- Compute feature-to-cell association matrix (features x cells) ----
+  cell_feature_mtx <- GetCellMarkerDist(MCA_obj = MCA_obj, markers = DEGs_mtx$markers, ues_dim = MCA_dim,
+                                        method = sim_methods)
+
+  # ---- Compute initial per-cell/spot score using marker weights ----
+  message("Calculating initial phenotype association scores")
+  ST_CellScore <- runCellScores(cell_feature_mtx,  DEGs_mtx, up_weight = up_weight, down_weight = down_weight, direction_col = "logFC")
+
+  CODEX_CellScore <- mapSPTScoreToCODEX(ST_coords, SP_coords, ST_CellScore, k = k)
+
+  return(CODEX_CellScore)
+}
+
+
+#' Transfer Spatial Transcriptomics Phenotype Scores to CODEX Cells
+#'
+#' This function transfers phenotype association scores from spatial
+#' transcriptomics (ST) cells/spots to spatially aligned CODEX cells using
+#' a spatial k-nearest-neighbor (kNN) mapping strategy with Gaussian
+#' kernel weighting.
+#'
+#' For each CODEX cell, the function identifies its k nearest ST cells/spots
+#' based on their spatial coordinates. The phenotype association scores of
+#' these neighboring ST cells/spots are then aggregated using distance-dependent
+#' Gaussian weights, assigning greater contributions to spatially closer
+#' cells/spots.
+#'
+#' This approach enables the transfer of transcriptomics-derived phenotype
+#' information to spatial proteomics data through shared spatial organization,
+#' without requiring direct correspondence between transcriptomic and
+#' proteomic molecular features.
+#'
+#' @param STcoord A matrix or data.frame containing spatial coordinates
+#'   of ST cells/spots. Rows represent ST cells/spots and columns contain
+#'   spatial coordinates (e.g., "x" and "y").
+#' @param CODEXcoord A matrix or data.frame containing spatial coordinates
+#'   of CODEX cells. Rows represent CODEX cells and columns contain
+#'   spatial coordinates (e.g., "x" and "y").
+#' @param STCellScore A numeric vector containing initial phenotype
+#'   association scores for ST cells/spots. The order of scores must
+#'   correspond to the row order of STcoord.
+#' @param k Integer scalar. Number of nearest ST cells/spots used for
+#'   estimating each CODEX cell score (default: 20).
+#' @param sigma Numeric scalar or NULL. Bandwidth parameter controlling
+#'   the spatial decay of Gaussian kernel weights. If NULL, sigma is
+#'   estimated as the median of nonzero distances among the identified
+#'   ST-to-CODEX nearest-neighbor pairs (default: NULL).
+#' @param x_col Character string specifying the column containing
+#'   x coordinates (default: "x").
+#' @param y_col Character string specifying the column containing
+#'   y coordinates (default: "y").
+#'
+#' @details
+#' For each CODEX cell i, the transferred phenotype score is computed as:
+#'
+#'   Score_i = sum_j(w_ij * Score_j) / sum_j(w_ij)
+#'
+#' where Score_j denotes the initial phenotype association score of
+#' neighboring ST cell/spot j, and w_ij is the Gaussian kernel weight:
+#'
+#'   w_ij = exp(-d_ij^2 / (2 * sigma^2))
+#'
+#' Here, d_ij represents the Euclidean distance between CODEX cell i
+#' and ST cell/spot j in the shared spatial coordinate system.
+#'
+#' If sigma cannot be estimated from nonzero neighbor distances,
+#' it is set to 1. Missing or undefined transferred scores are replaced
+#' with the median of the computed CODEX scores.
+#'
+#' Spatial coordinates from both modalities must be registered to a
+#' common coordinate system before applying this function.
+#'
+#' @return A named numeric vector containing the spatially transferred
+#'   phenotype association scores for CODEX cells. The vector names
+#'   correspond to the row names of CODEXcoord.
+#'
+#' @seealso getCodexInitCellScore, runCPlink_CODEX
+#'
+#' @export
+mapSPTScoreToCODEX <- function(STcoord,
+                               CODEXcoord,
+                               STCellScore,
+                               k = 20,
+                               sigma = NULL,
+                               x_col = "x",
+                               y_col = "y") {
+
+  # 坐标矩阵
+  st_xy <- (STcoord[, c(x_col, y_col), drop = FALSE])
+  codex_xy <- (CODEXcoord[, c(x_col, y_col), drop = FALSE])
+
+  coor_ST_SP_nn <- FNN::get.knnx(
+    data = st_xy,
+    query = codex_xy,
+    k = k
+  )
+
+  if (is.null(sigma)) {
+    sigma <- median(coor_ST_SP_nn$nn.dist[coor_ST_SP_nn$nn.dist > 0], na.rm = TRUE)
+  }
+
+  if (is.na(sigma) || sigma <= 0) {
+    sigma <- 1
+  }
+
+  w <- exp(-(coor_ST_SP_nn$nn.dist^2) / (2 * sigma^2))
+
+  score_mat <- matrix(
+    STCellScore[coor_ST_SP_nn$nn.index],
+    nrow = nrow(codex_xy),
+    ncol = k
+  )
+
+  denom <- rowSums(w)
+  codex_score <- rowSums(w * score_mat) / denom
+
+  codex_score[is.na(codex_score) | denom == 0] <- median(codex_score, na.rm = TRUE)
+
+  names(codex_score) <- rownames(codex_xy)
+
+  return(codex_score)
+}

@@ -141,7 +141,7 @@ runATAC <- function(matrix,
       object = sc_seurat,
       group.by.vars = batch_var,
       reduction = 'lsi',
-      assay.use = 'peaks',
+      assay.use = 'ATAC',
       project.dim = FALSE,
       verbose = FALSE
     )
@@ -264,4 +264,273 @@ runSpatial <- function(counts,
   seurat_obj <- RunUMAP(seurat_obj, reduction = "pca", dims = dims_UMAP, verbose = verbose)
 
   return(seurat_obj)
+}
+
+
+#' Run CODEX Spatial Proteomics Preprocessing and Analysis
+#'
+#' This function performs preprocessing and downstream analysis of
+#' CODEX spatial proteomics data using Seurat. The workflow includes
+#' centered log-ratio (CLR) normalization, data scaling, feature
+#' selection, principal component analysis (PCA), graph-based
+#' clustering, and UMAP visualization.
+#'
+#' The resulting Seurat object contains normalized protein expression
+#' profiles, low-dimensional embeddings, cell-cell similarity graphs,
+#' and clustering assignments for downstream analysis.
+#'
+#' @param codex.obj A Seurat object containing CODEX protein expression
+#'   data, with proteins as rows and cells as columns.
+#' @param npcs Integer scalar. Number of principal components to
+#'   compute (default: 10).
+#' @param dims Integer vector. PCA dimensions used for neighbor
+#'   construction and UMAP visualization (default: 1:10).
+#' @param resolution Numeric scalar. Clustering resolution parameter
+#'   (default: 0.4).
+#' @param verbose Logical. Whether to display progress messages
+#'   during dimensionality reduction, neighbor construction, and
+#'   clustering (default: FALSE).
+#'
+#' @return A Seurat object containing:
+#' \itemize{
+#'   \item CLR-normalized and scaled protein expression data.
+#'   \item PCA embeddings of CODEX cells.
+#'   \item UMAP embeddings for visualization.
+#'   \item Cell-cell nearest-neighbor and shared nearest-neighbor graphs.
+#'   \item Graph-based clustering assignments.
+#' }
+#'
+#' @export
+runCODEX <- function(codex.obj,
+                     npcs = 10,
+                     dims = 1:10,
+                     resolution = 0.4,
+                     verbose = FALSE) {
+
+  # ---- Step 1: Normalization and scaling ----
+  # Apply CLR normalization to protein expression data.
+  codex.obj <- NormalizeData(
+    object = codex.obj,
+    normalization.method = "CLR",
+    margin = 2
+  )
+
+  # Scale normalized protein expression data.
+  codex.obj <- ScaleData(
+    object = codex.obj
+  )
+
+  # ---- Step 2: Feature selection ----
+  # Use all protein features for dimensionality reduction.
+  VariableFeatures(codex.obj) <- rownames(codex.obj)
+
+  # ---- Step 3: Principal component analysis ----
+  codex.obj <- RunPCA(
+    object = codex.obj,
+    npcs = npcs,
+    verbose = verbose
+  )
+
+  # ---- Step 4: UMAP visualization ----
+  codex.obj <- RunUMAP(
+    object = codex.obj,
+    dims = dims,
+    verbose = verbose
+  )
+
+  # ---- Step 5: Construct cell-cell similarity graph ----
+  codex.obj <- FindNeighbors(
+    object = codex.obj,
+    dims = dims,
+    verbose = verbose
+  )
+
+  # ---- Step 6: Graph-based clustering ----
+  codex.obj <- FindClusters(
+    object = codex.obj,
+    resolution = resolution,
+    verbose = verbose
+  )
+
+  return(codex.obj)
+}
+
+
+#' Run Multimodal RNA and ADT Analysis Using WNN
+#'
+#' This function performs integrated analysis of single-cell transcriptomic
+#' (RNA) and protein (ADT) data using Seurat's Weighted Nearest Neighbor
+#' (WNN) framework.
+#'
+#' The workflow includes modality-specific normalization, feature selection,
+#' scaling, principal component analysis (PCA), multimodal neighbor graph
+#' construction, clustering, and UMAP visualization.
+#'
+#' RNA data are processed using log-normalization, whereas ADT data are
+#' normalized using centered log-ratio (CLR) transformation. PCA is performed
+#' independently for each modality, and the resulting embeddings are integrated
+#' to construct a weighted cell-cell similarity graph.
+#'
+#' @param seurat_obj A Seurat object containing RNA and ADT assays with
+#'   raw count matrices and corresponding cell-level metadata.
+#' @param nfeatures Integer. Number of highly variable RNA features
+#'   to select (default: 2000).
+#' @param dims_RNA Integer vector. RNA PCA dimensions used for WNN
+#'   integration (default: 1:20).
+#' @param dims_ADT Integer vector. ADT PCA dimensions used for WNN
+#'   integration (default: 1:10).
+#' @param resolution Numeric. Clustering resolution (default: 0.8).
+#' @param k.nn Integer. Number of nearest neighbors used for WNN
+#'   graph construction (default: 20).
+#' @param verbose Logical. Whether to display progress messages
+#'   (default: FALSE).
+#'
+#' @return A Seurat object containing:
+#' \itemize{
+#'   \item RNA: Normalized RNA expression data.
+#'   \item ADT: CLR-normalized protein expression data.
+#'   \item pca: RNA principal component embeddings.
+#'   \item apca: ADT principal component embeddings.
+#'   \item weighted.nn: Weighted nearest-neighbor information.
+#'   \item wknn: Multimodal weighted nearest-neighbor graph.
+#'   \item wsnn: Multimodal shared nearest-neighbor graph.
+#'   \item wnn.umap: WNN-based UMAP embeddings.
+#'   \item seurat_clusters: Multimodal clustering assignments.
+#' }
+#'
+#' @export
+runMultiModal <- function(seurat_obj,
+                          nfeatures = 2000,
+                          dims_RNA = 1:20,
+                          dims_ADT = 1:10,
+                          resolution = 0.8,
+                          k.nn = 20,
+                          verbose = FALSE) {
+
+  # ---- Validate input assays ----
+  if (!all(c("RNA", "ADT") %in% Assays(seurat_obj))) {
+    stop("`seurat_obj` must contain both RNA and ADT assays.")
+  }
+
+  # ---- Extract raw count matrices ----
+  # Support both Seurat v4 and v5.
+  get_counts <- function(object, assay) {
+
+    if (utils::packageVersion("SeuratObject") >= "5.0.0") {
+      GetAssayData(object, assay = assay, layer = "counts")
+    } else {
+      GetAssayData(object, assay = assay, slot = "counts")
+    }
+
+  }
+
+  rna_counts <- get_counts(seurat_obj, "RNA")
+  adt_counts <- get_counts(seurat_obj, "ADT")
+
+  # Check cell correspondence between RNA and ADT
+  if (!setequal(colnames(rna_counts), colnames(adt_counts)) ||
+      anyDuplicated(colnames(rna_counts)) ||
+      anyDuplicated(colnames(adt_counts))) {
+    stop("RNA and ADT assays must contain identical cell identifiers.")
+  }
+
+  # Ensure consistent cell ordering
+  adt_counts <- adt_counts[
+    , colnames(rna_counts), drop = FALSE
+  ]
+
+  meta.data <- seurat_obj@meta.data[
+    colnames(rna_counts), , drop = FALSE
+  ]
+
+  # ---- Create Seurat object with RNA and ADT assays ----
+  sc_seurat <- CreateSeuratObject(
+    counts = rna_counts,
+    meta.data = meta.data
+  )
+
+  adt_count <- CreateAssayObject(
+    counts = adt_counts
+  )
+
+  sc_seurat[["ADT"]] <- adt_count
+
+  # ---- Step 1: RNA preprocessing ----
+  DefaultAssay(sc_seurat) <- "RNA"
+
+  sc_seurat <- NormalizeData(
+    sc_seurat,
+    verbose = verbose
+  )
+
+  sc_seurat <- FindVariableFeatures(
+    sc_seurat,
+    nfeatures = nfeatures,
+    verbose = verbose
+  )
+
+  sc_seurat <- ScaleData(
+    sc_seurat,
+    verbose = verbose
+  )
+
+  # Preserve the original default PCA settings
+  sc_seurat <- RunPCA(
+    sc_seurat,
+    verbose = verbose
+  )
+
+  # ---- Step 2: ADT preprocessing ----
+  DefaultAssay(sc_seurat) <- "ADT"
+
+  # Use all ADT features for dimensionality reduction
+  VariableFeatures(sc_seurat) <- rownames(sc_seurat[["ADT"]])
+
+  sc_seurat <- NormalizeData(
+    sc_seurat,
+    normalization.method = "CLR",
+    margin = 2,
+    verbose = verbose
+  )
+
+  sc_seurat <- ScaleData(
+    sc_seurat,
+    verbose = verbose
+  )
+
+  # Preserve the original default PCA settings
+  sc_seurat <- RunPCA(
+    sc_seurat,
+    reduction.name = "apca",
+    verbose = verbose
+  )
+
+  # ---- Step 3: Construct multimodal WNN graph ----
+  sc_seurat <- FindMultiModalNeighbors(
+    sc_seurat,
+    reduction.list = list("pca", "apca"),
+    dims.list = list(dims_RNA, dims_ADT),
+    modality.weight.name = "RNA.weight",
+    k.nn = k.nn,
+    verbose = verbose
+  )
+
+  # ---- Step 4: WNN-based clustering ----
+  sc_seurat <- FindClusters(
+    sc_seurat,
+    graph.name = "wsnn",
+    resolution = resolution,
+    verbose = verbose
+  )
+
+  # ---- Step 5: WNN-based UMAP visualization ----
+  sc_seurat <- RunUMAP(
+    sc_seurat,
+    nn.name = "weighted.nn",
+    reduction.name = "wnn.umap",
+    reduction.key = "wnnUMAP_",
+    verbose = verbose
+  )
+
+  return(sc_seurat)
 }
